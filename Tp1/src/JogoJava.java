@@ -20,8 +20,8 @@
 	(d) Sair: caso o usuário decida não jogar novamente, o programa deve mostrar o menu inicial.
 4. Sair. O programa deverá imprimir o menu inicial até que essa opção seja escolhida. Caso a opção “Sair” seja escolhida, o programa irá se encerrar. */
 import java.util.Scanner;
-import java.util.Random;
-	
+import java.util.Random;	
+
 public class JogoJava {
 		//Variaveis estáticas
 		static String[][] matrizForca = new String[51][51];
@@ -33,18 +33,18 @@ public class JogoJava {
 			//Declarações
 			//Instruções
 			//Temas pré-definidos
-			matrizForca[0][0] = "Coelho";
-			matrizForca[1][0] = "Oceano";
-			matrizForca[2][0] = "Floresta";
-			matrizForca[3][0] = "Rato";
-			matrizForca[4][0] = "Cozinha";
+			matrizForca[0][0] = "coelho";
+			matrizForca[1][0] = "oceano";
+			matrizForca[2][0] = "floresta";
+			matrizForca[3][0] = "rato";
+			matrizForca[4][0] = "cozinha";
 			//Palavras pré-definidas
-			matrizForca[0][1] = "Cenoura";
-			matrizForca[0][2] = "Dentes";
-			matrizForca[1][1] = "Baleia";
-			matrizForca[2][1] = "Pinheiro";
-			matrizForca[3][1] = "Ratoeira";
-			matrizForca[4][1] = "Faca";
+			matrizForca[0][1] = "cenoura";
+			matrizForca[0][2] = "dentes";
+			matrizForca[1][1] = "baleia";
+			matrizForca[2][1] = "pinheiro";
+			matrizForca[3][1] = "ratoeira";
+			matrizForca[4][1] = "faca";
 				
 			return matrizForca[i][j];
 		}
@@ -113,7 +113,26 @@ public class JogoJava {
 			}
 			return 0;//Não há espaços nulos
 		}
-		//Método procurando tema, onde ele está?
+		//Método procurando palavra, onde ela está? Será que eu vou encontrar?
+		public static int procurandoPalavra(String temaDigitado, String palavraDigitada) {
+			//Declarações
+			int bandeira;
+			int bandeiraDois;
+			int j;
+			//Instruções
+			bandeira = procurandoTema(temaDigitado);
+			bandeiraDois = verificarPalavraNula(temaDigitado);
+			for(j = 1; j < bandeiraDois; j++) {
+				System.out.println(matrizForca[bandeira][j]);
+				if(matrizForca[bandeira][j].equals(palavraDigitada)) {
+					return 1;//Já há palavra digitada no tema
+				}
+				System.out.println(matrizForca[bandeira][j]);
+			}
+			
+			return 0;
+		}
+		//Método procurando tema, onde ele está? Eu quero saber como chegar lá
 		public static int procurandoTema(String temaDigitado) {
 			//Declarações
 			int bandeira;
@@ -204,9 +223,9 @@ public class JogoJava {
 			switch(opcao) {
 		 	//Cadastrar temas
 		 	case 1:
-		 		System.out.println("Digite o tema para cadastrar: ");
+		 		System.out.println("Digite o tema para cadastrar. (Letras minusculas): ");
 		 		novoTema = entrada.next();//Receber string do usuário
-		 		posicaoDois = verificarPalavraNula(novoTema);//Se for 200, temas repetidos
+		 		posicaoDois = verificarPalavraNula(novoTema);
 		 		if(posicaoDois >= 0) {
 		 			novoTemaMatriz(novoTema);
 		 			System.out.println( "O tema cadastrado foi: " + novoTemaMatriz(novoTema) );
@@ -215,7 +234,7 @@ public class JogoJava {
 		 		}
 		 		break;
 			case 2:
-				System.out.println("Digite um tema para excluir: ");
+				System.out.println("Digite um tema para excluir. (Letras minusculas): ");
 				novoTema = entrada.next();//Receber posicao do usuário
 				posicao = procurandoTema(novoTema);
 	 			posicaoDois = verificarPalavraNula(novoTema);//Se retornar -1, não deve excluir tema
@@ -231,6 +250,7 @@ public class JogoJava {
 			//Procurar tema
 		 	case 3:
 		 		System.out.println("Digite o tema que deseja achar: ");
+		 		imprimirTemasMatriz();
 		 		novoTema = entrada.next();
 		 		posicao = procurandoTema(novoTema);
 		 		if(posicao >= 0) {
@@ -256,12 +276,17 @@ public class JogoJava {
 			switch(opcao) {
 		 	//Cadastrar temas
 		 	case 1:
-		 		System.out.println("Digite o tema onde quer cadastrar uma nova palavra:");
+		 		System.out.println("Digite o tema onde quer cadastrar uma nova palavra. (Letras minusculas):");
 		 		temaDigitado = entrada.next();//Receber string do usuário
-		 		System.out.println("Digite a palavra que deseja cadastrar:");
+		 		System.out.println("Digite a palavra que deseja cadastrar. (Letras minusculas):");
 		 		novaPalavra = entrada.next();//Receber a nova palavra
-		 		novaPalavraMatriz(temaDigitado, novaPalavra);
-		 		System.out.println( "O tema " + temaDigitado + " recebeu " + novaPalavraMatriz(temaDigitado, novaPalavra) );
+		 		posicao = procurandoPalavra(temaDigitado, novaPalavra);
+		 		if(posicao == 0){
+		 			novaPalavraMatriz(temaDigitado, novaPalavra);
+		 			System.out.println( "Palavra " + novaPalavraMatriz(temaDigitado, novaPalavra) + " encontrada no tema " + temaDigitado);
+		 		}else {
+		 			System.out.println("Palavra já existe no tema procurado.");
+		 		}
 		 		break;
 		 	//Excluir tema
 		 	case 2:
@@ -318,26 +343,27 @@ public class JogoJava {
 			}
 			return 0;//Errou um caracter
 		}
-		//Método acertou/errou
-		public static void acertouErrou() {
-			//Declarações
-			//Instruções
-		}
 		//Método jogar
 		public static void metodoJogar() {
 			//Declarações
 			String temaDigitado;
 			String[] vetorTentativas;
+			String[] vetorAcertos;
+			char resposta;
 			int bandeira;
 			int posicao;
 			int erros;
 			int pontos;
+			int chutes;
+			int tamanhoPalavra;
 			String tentativa;
 			String palavraSorteada;
 			//Instruções
-			vetorTentativas = new String[5];
-			erros = 0;//Máximo cinco tentativas
+			vetorTentativas = new String[42];
+			vetorAcertos = new String[42];
+			erros = 5;//Máximo cinco tentativas
 			pontos = 0;
+			chutes = 0;
 			System.out.println("Você escolheu: JOGAR.");
 			System.out.println("Os temas para adivinhar são: ");
 			imprimirTemasMatriz();
@@ -345,27 +371,64 @@ public class JogoJava {
 			System.out.println("Digite um dos temas para jogar com este tema.");
 			temaDigitado = entrada.next();
 			posicao = procurandoTema(temaDigitado);//Achar a posição do tema digitado
-			//Se achar tema digitado
-			if(posicao >= 0) {
+			if(posicao >= 0) {//Se achar tema digitado
 				//Sortear palavra não nula
 				palavraSorteada = sortearPalavra(posicao);
-				System.out.println("O tema é: " + temaDigitado);
+				tamanhoPalavra = palavraSorteada.length();
+				System.out.println("O tema é: " + temaDigitado);//Mostrar tema digitado
 				//Começar jogo
-				System.out.println("Digite uma letra, mas não perca a cabeça!");
-				tentativa = entrada.next();//Ler char
-				//Ver se string está na palavra
-				bandeira = procurandoCaracter(palavraSorteada, tentativa);//Retorna 1 se verdadeiro
-				vetorTentativas[pontos] = tentativa;//Armazenar cada tentativa em uma posição do vetor tentativa
-				pontos++;
-				//Se 1, usuário acertou uma palavra
-				if(bandeira == 1) {
-					System.out.println("Parabéns, você acertou uma palavra!");
-				}else {
-					if(bandeira == 0 ) {
-						System.out.println("Você errou uma palavra! Restam somente " + (5 - pontos) + " tentativas");
+				do {
+					System.out.println("Digite uma letra, mas não perca a cabeça!");
+					tentativa = entrada.next();//Ler letra
+					//Ver se está na palavra
+					bandeira = procurandoCaracter(palavraSorteada, tentativa);//Retorna 1 se acertar letra
+					//Ver se tentativa é repetida
+					if(chutes > 0) {
+						do {//Na primeira vez nada acontecerá
+							if(vetorTentativas[chutes - 1].equals(tentativa)) {//Se a nova tentativa for igual a anterior
+								System.out.println("Tente outra letra!");
+								tentativa = entrada.next();//Ler tentativa
+							}
+						}while(vetorTentativas[chutes - 1].equals(tentativa));
+					}
+					vetorTentativas[chutes] = tentativa;//Armazenar cada tentativa em uma posição do vetor tentativa
+					chutes++;
+					//Se 1, usuário acertou uma palavra
+					if(bandeira == 1) {
+						vetorAcertos[pontos] = tentativa;
+						pontos++;
+						System.out.println("Parabéns, você acertou uma palavra!");
+						System.out.println("Palavra acertada: " + tentativa);
+						if(pontos == tamanhoPalavra) {
+							System.out.println("Parabéns! Você acertou a palavra! Deseja jogar novamente?");
+							resposta = entrada.next().charAt(0);
+							if(resposta == 's' || resposta == 'S') {
+								//Jogar novamente
+								metodoJogar();
+							}else {
+								//Terminar jogo
+								metodoSair();
+							}
+						}
+					}else {
+						if(bandeira == 0 ) {
+							erros--;
+						System.out.println("Você errou uma palavra! Restam " + erros + " tentativas!");
+						}
+					}
+				}while(erros > 0);
+				if(erros == 0) {
+					//Perguntar se usuário deseja jogar novamente
+					System.out.println("Você perdeu! Deseja jogar novamente?");
+					resposta = entrada.next().charAt(0);
+					if(resposta == 's' || resposta == 'S') {
+						//Jogar novamente
+						metodoJogar();
+					}else {
+						//Terminar jogo
+						metodoSair();
 					}
 				}
-				//Se não, perdeu uma chance pontos--
 			}
 		}
 		//Método sair
