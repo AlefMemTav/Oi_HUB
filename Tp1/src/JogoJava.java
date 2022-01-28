@@ -117,17 +117,13 @@ public class JogoJava {
 		public static int procurandoPalavra(String temaDigitado, String palavraDigitada) {
 			//Declarações
 			int bandeira;
-			int bandeiraDois;
 			int j;
 			//Instruções
 			bandeira = procurandoTema(temaDigitado);
-			bandeiraDois = verificarPalavraNula(temaDigitado);
-			for(j = 1; j < bandeiraDois; j++) {
-				System.out.println(matrizForca[bandeira][j]);
+			for(j = 1; j < 51; j++) {
 				if(matrizForca[bandeira][j].equals(palavraDigitada)) {
 					return 1;//Já há palavra digitada no tema
 				}
-				System.out.println(matrizForca[bandeira][j]);
 			}
 			
 			return 0;
@@ -167,7 +163,7 @@ public class JogoJava {
 			//Instruções
 			bandeira = verificarTemaNulo();
 			for(int i = 0; i < bandeira - 1; i++) {
-				System.out.printf(matrizForca[i][0] + " ");
+				System.out.println(matrizForca[i][0] + " ");
 			}
 			return null;
 		}
@@ -229,6 +225,7 @@ public class JogoJava {
 		 		if(posicaoDois >= 0) {
 		 			novoTemaMatriz(novoTema);
 		 			System.out.println( "O tema cadastrado foi: " + novoTemaMatriz(novoTema) );
+		 			metodoJogar();
 		 		}else {
 		 			System.out.println("Este tema já existe. Não é possível cadastrá-lo.");
 		 		}
@@ -242,6 +239,7 @@ public class JogoJava {
 	 				if(posicaoDois >= 0) {
 						matrizForca[posicao][0] = novoTemaMatriz(null);//Excluir tema
 		 				System.out.println("Tema excluído com sucesso!");
+		 				metodoJogar();
 					}else {
 		 				System.out.println("Não foi possível excluir o tema. Verifique se existem palavras cadastradas nesse tema.");
 		 			}
@@ -255,8 +253,10 @@ public class JogoJava {
 		 		posicao = procurandoTema(novoTema);
 		 		if(posicao >= 0) {
 		 			System.out.printf(novoTema +" pertence aos temas do jogo.");
+		 			metodoJogar();
 		 		}else {
 		 			System.out.printf(novoTema +" não pertence aos temas do jogo.");
+		 			metodoJogar();
 		 		}
 				break;
 			}
@@ -269,6 +269,7 @@ public class JogoJava {
 			String novaPalavra;
 			int i, j;
 			int posicao;
+			int posicao2;
 			//Instruções
 			System.out.println("Você escolheu: GERENCIAR PALAVRAS. DIGITE UM NÚMERO:");
 			System.out.println("1.Cadastrar palavras.		2. Excluir palavras. 		3.Buscar palavras. 		4. Listar palavras");
@@ -276,47 +277,40 @@ public class JogoJava {
 			switch(opcao) {
 		 	//Cadastrar temas
 		 	case 1:
+		 		imprimirTemasMatriz();
 		 		System.out.println("Digite o tema onde quer cadastrar uma nova palavra. (Letras minusculas):");
 		 		temaDigitado = entrada.next();//Receber string do usuário
-		 		System.out.println("Digite a palavra que deseja cadastrar. (Letras minusculas):");
-		 		novaPalavra = entrada.next();//Receber a nova palavra
-		 		posicao = procurandoPalavra(temaDigitado, novaPalavra);
-		 		if(posicao == 0){
-		 			novaPalavraMatriz(temaDigitado, novaPalavra);
-		 			System.out.println( "Palavra " + novaPalavraMatriz(temaDigitado, novaPalavra) + " encontrada no tema " + temaDigitado);
-		 		}else {
-		 			System.out.println("Palavra já existe no tema procurado.");
+		 		posicao2 = procurandoTema(temaDigitado);//Achou tema
+		 		while(posicao2 < 0) {
+		 			System.out.println("Tema não achado. Digite o tema onde quer cadastrar uma nova palavra. (Letras minusculas):");
+			 		temaDigitado = entrada.next();//Receber string do usuário
+			 		posicao2 = procurandoTema(temaDigitado);//Achou tema
+		 		}
+		 		if(posicao2 >= 0) {
+		 			System.out.println("Digite a palavra que deseja cadastrar. (Letras minusculas):");
+		 			novaPalavra = entrada.next();//Receber a nova palavra
+		 			posicao = procurandoPalavra(temaDigitado, novaPalavra);
+		 			if(posicao == 0){//Se não há palavra
+		 				novaPalavraMatriz(temaDigitado, novaPalavra);
+		 				System.out.println( "Palavra " + novaPalavraMatriz(temaDigitado, novaPalavra) + " encontrada no tema " + temaDigitado);
+		 				metodoJogar();
+		 			}else {
+		 				System.out.println("Palavra já existe no tema procurado.");
+		 			}
 		 		}
 		 		break;
 		 	//Excluir tema
 		 	case 2:
-		 		System.out.println("Escolha uma posicao para excluir o tema:");
-		 		posicao = entrada.nextInt();//Receber posicao do usuário
-		 		//Atualizar matriz
-		 		for(i = 0; i < 51; i++) {
-		 			if(i == posicao) {
-		 				matrizForca[i][0] = novoTemaMatriz(null);
-		 			}
-		 		}
-		 		System.out.println("Tema excluído com sucesso!");
+		 		//Sem tempo para terminar
 		 		break;
 		 	//Procurar tema
 		 	case 3:
-		 		System.out.println("Digite o tema que deseja achar:");
-		 		//novoTema = entrada.next();
-		 		//Percorrer as linhas
-				for(i = 0; i < 51; i++) {
-					//Percorrer as colunas por linha i
-					for(j = 0; j < 51; j++) {
-						//if(novoTema.equals(matrizForca[i][0])) {
-							//Imprimir as colunas por linha i
-							//System.out.printf(novoTema +" pertence aos temas do jogo.");
-						}
-					System.out.println("\n");
-					}
+		 		System.out.println("Digite a palavra que deseja achar:");
+		 		//Sem tempo para terminar
 				break;
 			}
 		}
+		//Método sortear palavra
 		//Método sortear palavra
 		public static String sortearPalavra(int posicao){
 			//Declarações
@@ -364,7 +358,7 @@ public class JogoJava {
 			erros = 5;//Máximo cinco tentativas
 			pontos = 0;
 			chutes = 0;
-			System.out.println("Você escolheu: JOGAR.");
+			System.out.println("JOGAR.");
 			System.out.println("Os temas para adivinhar são: ");
 			imprimirTemasMatriz();
 			System.out.println(" ");
