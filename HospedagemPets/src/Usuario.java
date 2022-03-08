@@ -36,4 +36,12 @@ public abstract class Usuario {
 	public void setTelefone(int telefone) {
 		this.telefone = telefone;
 	}
+	//Metodo que verifica o login
+	public boolean login(String emailU, String senhaU) {
+		if(email.equals(emailU) && senha.equals(senhaU)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

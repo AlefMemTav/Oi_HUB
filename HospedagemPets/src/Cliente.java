@@ -1,9 +1,12 @@
-import java.util.Date;
 
 public class Cliente extends Usuario {
 	private String cidadeCliente;
 	private Pet pet;
 
+	public Cliente(Pet p) {
+		pet = p;
+	}
+	
 	public String getCidade() {
 		return cidadeCliente;
 	}
