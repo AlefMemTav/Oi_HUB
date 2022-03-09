@@ -4,9 +4,9 @@ public class Pet {
 	private String especie;
 	private String genero;
 	private String raca;
-	private int tamanho;
+	private double tamanho;
 
-	public Pet(String c, String e, String g, String r, int t) {
+	public Pet(String c, String e, String g, String r, double t) {
 		castramento = c;
 		especie = e;
 		genero = g;
@@ -46,11 +46,11 @@ public class Pet {
 		this.raca = raca;
 	}
 	
-	public int getTamanho() {
+	public double getTamanho() {
 		return tamanho;
 	}
 	
-	public void setTamanho(int tamanho) {
+	public void setTamanho(double tamanho) {
 		this.tamanho = tamanho;
 	}
 }

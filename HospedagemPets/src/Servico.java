@@ -16,7 +16,7 @@ public abstract class Servico {
 		return funcionario;
 	}
 	
-	public void serFuncionario(Funcionario funcionario) {
+	public void setFuncionario(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
 	
