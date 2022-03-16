@@ -1,14 +1,22 @@
-package Modelo;
+package modelo;
 
 public class Cliente extends Usuario {
+	//Declarações
 	private String cidadeCliente;
 	private Pet pet;
-	
-	public Cliente(String e, String n, String s, int t) {
+
+	//Herança explicita de Usuario
+	public Cliente() {
+		super();
+	}
+	//Sobrecarga de Cliente
+	public Cliente(String e, String n, String s, int t, String c, Pet p) {
 		email = e;
 		nome = n;
 		senha = s;
 		telefone = t;
+		cidadeCliente = c;
+		pet = p;
 	}
 	
 	public String getCidade() {

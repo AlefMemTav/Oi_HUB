@@ -1,4 +1,4 @@
-package Modelo;
+package modelo;
 import java.util.Date;
 public class Visita extends Servico {
 	private Date dataVisita;

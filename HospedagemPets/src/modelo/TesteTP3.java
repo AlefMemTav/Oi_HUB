@@ -1,4 +1,4 @@
-package Modelo;
+package modelo;
 import java.util.*;
 public class TesteTP3 {
 	static Pet p1;

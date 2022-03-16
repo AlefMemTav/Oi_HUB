@@ -1,6 +1,6 @@
-package Modelo;
+package modelo;
 import java.util.Date;
-public class Creche extends Servico {
+public class Hospedagem extends Servico {
 	private Date dataEntrada;
 	private Date dataSaida;
 	private int horaEntrada;
