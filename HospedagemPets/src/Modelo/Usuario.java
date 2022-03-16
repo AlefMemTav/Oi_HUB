@@ -1,3 +1,4 @@
+package Modelo;
 
 public abstract class Usuario {
 	protected String email;

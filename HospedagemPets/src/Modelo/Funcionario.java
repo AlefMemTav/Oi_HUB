@@ -1,3 +1,4 @@
+package Modelo;
 import java.util.Date;
 public class Funcionario extends Usuario {
 	private Date dataNascimento;

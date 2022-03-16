@@ -1,4 +1,4 @@
-
+package Modelo;
 public abstract class Servico {
 	protected String cidadeServico;
 	protected Funcionario funcionario;
