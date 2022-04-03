@@ -3,21 +3,23 @@ package controle;
 
 import java.util.ArrayList;
 import modelo.Cliente;
-import modelo.DAO.BancoDeDados;
-import modelo.DAO.HospedagemDAO;
-import modelo.DAO.HospitaleiroDAO;
+import controle.DAO.BancoDeDados;
+import controle.DAO.HospedagemDAO;
+import controle.DAO.HospitaleiroDAO;
+import controle.DAO.PetDAO;
 import modelo.Hospedagem;
 import modelo.Hospitaleiro;
 import modelo.Pet;
+import modelo.Sessao;
 import modelo.Usuario;
-import visualizar.TelaHospedReservas;
-import visualizar.TelaHospedagem;
-import visualizar.TelaLogin;
-import visualizar.TelaMenu;
+import vista.TelaHospedReservas;
+import vista.TelaHospedagem;
+import vista.TelaLogin;
+import vista.TelaMenu;
 
 /**
  * 
- * @author Pedro Lucas Garcia
+ * @author Pedro Lucas Garcia 
  */
 public class ControleHospedagem {
     // Declaracao
@@ -27,6 +29,7 @@ public class ControleHospedagem {
 
     public ControleHospedagem(TelaHospedagem telaHosp) {
         this.telaHosp = telaHosp;
+        this.telaLog = new TelaLogin();
     }
     
     // OBS
@@ -45,12 +48,23 @@ public class ControleHospedagem {
      * Limpar os campos de texto da tela de hospedagem.
      */
     public void limparCampo(){
-        telaHosp.getjTxFieldValor().setText("-"); // Limpar os campos de texto
-        telaHosp.getjTxFieldCidade().setText("-");
         telaHosp.getjFmtdDataEntrada().setText("");
         telaHosp.getjFmtdDataSaida().setText("");
         telaHosp.getjFmtdHoraEntrada().setText("");
-        telaHosp.getjFmtdHoraSaida().setText("");
+        telaHosp.getjFmtdHoraSaida().setText("" );
+    }
+    
+    /* Usuario */
+    public static int idUsuarioLogado(){
+        String usuarioLogado = Sessao.getInstancia().getUsuario().getEmail();
+        
+        for(Usuario user : BancoDeDados.usuarios){
+            if(usuarioLogado.equals(user.getEmail())){
+                int id = user.getId();
+                return id;
+            }
+        }
+        return 0;
     }
     
     /* Hospitaleiros */
@@ -81,15 +95,24 @@ public class ControleHospedagem {
     */
     public void atualizarHospitaleiros(){
         HospitaleiroDAO hospD = new HospitaleiroDAO();
+        ArrayList<Hospitaleiro> hospitaleiroVerificado = new ArrayList<>();
         ArrayList<Hospitaleiro> hospitaleiros = hospD.selecionarTodos();
+        int id = idUsuarioLogado();
+        
+        // 
+        for(Hospitaleiro hospitaleiro : hospitaleiros){
+            if(hospitaleiro.getId() != id){
+                hospitaleiroVerificado.add(hospitaleiro);
+            }
+        }
         // Preencher o combo box de hospitaleiros com todos os hospitaleiros em BancoDeDados
-        preencherHospitaleiros(hospitaleiros);
+        preencherHospitaleiros(hospitaleiroVerificado);
     }
  
     /* Valor */
     
     /**
-     * Altera o campo de texto do valor para valor.
+     * Altera o campo de valor para valor.
      * @param valor 
      */
     public void obterValor(float valor){
@@ -128,16 +151,13 @@ public class ControleHospedagem {
     
     /**
      * 
-     * @return 
+     * @return cliente se bem-sucedido, null caso contrario.
      */
     public Cliente obterCliente(){
-        int id = 0;
-        for(Usuario usuario : BancoDeDados.usuarios){
-            if(telaLog.getjTxFieldUsuario().getText().equals(usuario.getEmail())){
-                id = usuario.getId();
-            }
-        }
-        
+        int id = idUsuarioLogado();
+        System.out.println("ControleHospedagem: " + id);
+
+        // Percorrer os clientes em BancoDeDados, comparando o id
         for(Cliente cliente : BancoDeDados.clientes){
             if(id == cliente.getId()){
                 return cliente;
@@ -172,31 +192,35 @@ public class ControleHospedagem {
     /**
      * 
      */
-    //public void atualizarPets(){
-    //    PetDAO petD = new petDAO();
-    //    ArrayList<Pet> pets = petD.selecionarTodos();
-    //    
-    //    preencherPets(pets);
-    //}
+    public void atualizarPets(){
+        int idCliente = idUsuarioLogado();
+        PetDAO petD = new PetDAO();
+        ArrayList<Pet> pets = petD.selecionarTodos();
+        ArrayList<Pet> petsCliente = new ArrayList<>();
+        
+        for(Pet pet : pets){
+            if(idCliente == pet.getIdDono()){
+                petsCliente.add(pet);
+            }
+        }
+        preencherPets(petsCliente);
+    }
 
     /**
      * 
      * @return 
      */
     public Hospedagem obterHospedagem(){
-        // Pegar os campos digitados
-        // Id da hospedagem, nao visivel para o cliente
-        String idStr = telaHosp.getjTxFieldId().getText();
-        int id = Integer.parseInt(idStr); // Converter idStr de String para int
+        // Atribuir uma hospedagem
+        // Id da hospedagem vale 0 para uma nova hospedagem
         // Data de entrada e de saida
         String dataE = telaHosp.getjFmtdDataEntrada().getText();
         String dataS = telaHosp.getjFmtdDataSaida().getText();
         // Hora de entrada e de saida
         String horaE = telaHosp.getjFmtdHoraEntrada().getText();
         String horaS = telaHosp.getjFmtdHoraSaida().getText();
-        // Id do tipo de servico (hospedagem), nao visivel tambem
-        String idServicoStr = telaHosp.getjTxFieldId().getText();
-        int idServico = Integer.parseInt(idServicoStr); 
+        // Id do tipo de servico hospedagem vale 1
+        int idServico = 1;
         // Hospitaleiro
         Hospitaleiro hospitaleiro = obterHospitaleiro();
         // Cliente
@@ -204,8 +228,8 @@ public class ControleHospedagem {
         // Pet
         Pet pet = obterPet();
         
-        //
-        Hospedagem hospedagem = new Hospedagem(id, dataE, dataS, horaE, horaS, idServico, hospitaleiro, cliente, pet);
+        // Instanciar uma hospedagem
+        Hospedagem hospedagem = new Hospedagem(0, dataE, dataS, horaE, horaS, idServico, hospitaleiro, cliente, pet);
         return hospedagem;
     }
     
@@ -219,5 +243,7 @@ public class ControleHospedagem {
         HospedagemDAO hospedagemD = new HospedagemDAO();
         //
         hospedagemD.inserirHospedagem(hospedagem);
+        //
+        limparCampo();
     }
 }

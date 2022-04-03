@@ -1,8 +1,8 @@
 
 package controle;
 
-import visualizar.TelaHospedagem;
-import visualizar.TelaMenu;
+import vista.TelaHospedagem;
+import vista.TelaMenu;
 
 /*
  *

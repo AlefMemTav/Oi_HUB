@@ -11,6 +11,7 @@ import java.util.logging.Logger;
  * @author Pedro Lucas Garcia
  */
 public class Hospitaleiro extends Usuario {
+    private int idHospitaleiro;
     private Date nascimento;
     private String cidade;
     private String genero;
@@ -19,8 +20,9 @@ public class Hospitaleiro extends Usuario {
     private int preco;
     
     /* Construtor completo */
-    public Hospitaleiro(int id, String nome, String email, String nascimento, String cidade, String genero, String habitacao, int servico, int preco) {
-        super(id, nome, email);
+    public Hospitaleiro(int idHospitaleiro, int id, int nivelDeAcesso, String nome, String email, String nascimento, String cidade, String genero, String habitacao, int servico, int preco) {
+        super(id, nivelDeAcesso, nome, email);
+        this.idHospitaleiro = idHospitaleiro;
         try {
             this.nascimento = new SimpleDateFormat("dd/MM/yyyy").parse(nascimento); // Converter Date em String
         } catch (ParseException ex) {
@@ -35,8 +37,10 @@ public class Hospitaleiro extends Usuario {
     
     @Override
     public String toString(){
-        return getEmail(); // Quando getNome nao retorna nada, quando getEmail retorna nome
+        return getNome();
     }
+    
+    
     
     public Date getNascimento() {
         return nascimento;
@@ -77,4 +81,6 @@ public class Hospitaleiro extends Usuario {
     public void setPreco(int preco) {
         this.preco = preco;
     }
+    
+    
 }	

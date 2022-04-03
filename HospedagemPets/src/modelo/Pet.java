@@ -88,4 +88,9 @@ public class Pet {
     public void setTamanho(String tamanho) {
         this.tamanho = tamanho;
     }
+    
+    @Override
+    public String toString(){
+        return getNome();
+    }
 }

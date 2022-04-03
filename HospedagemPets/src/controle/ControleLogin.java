@@ -1,13 +1,11 @@
 
 package controle;
 
-import java.util.ArrayList;
-import modelo.Cliente;
-import modelo.DAO.ClienteDAO;
-import modelo.DAO.UsuarioDAO;
+import controle.DAO.UsuarioDAO;
+import modelo.Sessao;
 import modelo.Usuario;
-import visualizar.TelaLogin;
-import visualizar.TelaMenu;
+import vista.TelaLogin;
+import vista.TelaMenu;
 
 /**
  * Controlador do login
@@ -22,46 +20,63 @@ public class ControleLogin {
     }
 
     /* Métodos */
-    public void setUsuario(Usuario usuario){
-        // Pegar os dados digitados na tela de login
-        String emailDigitado = usuario.getEmail();
-        String senhaDigitada = usuario.getSenha();
-        // 
-        telaLog.getjTxFieldUsuario().setText(emailDigitado);
-        telaLog.getjPasswordFieldSenha().setText(senhaDigitada);
-    }
+    
     /**
-     * Pega os campos de texto de usuario na tela de login e armazena nas variaveis
-     * @return Retorna usuarioDigitado
-     */
-    public Usuario obterUsuario(){
-        // Pegar os dados digitados na tela de login
-        String emailDigitado = telaLog.getjTxFieldUsuario().getText();
-        String senhaDigitada = telaLog.getjPasswordFieldSenha().getText();
-        
-        // Instanciar um usuario com os dados digitados
-        Usuario usuarioDigitado = new Usuario(emailDigitado, senhaDigitada);
-        // Retornar o usuario
-        return usuarioDigitado;
-    }
-    /**
-     * Limpa os campos de texto de usuario na tela de login
-     * 
-     */
+    * Limpa os campos de texto de usuario na tela de login.
+    */
     public void limparTela(){
         // Limpar o campo de senha do usuario
         // telaLog.getjTxFieldUsuario().setText(""); // Pode ser util
         telaLog.getjPasswordFieldSenha().setText("");
     } 
     
+    /**
+     * 
+     */
     public void irParaMenu(){
         new TelaMenu().setVisible(true);
     }
     
+    /**
+     * 
+     */
     public void fecharLogin(){
         this.telaLog.dispose();
     }
     
+    /**
+     * 
+     * @param usuarioAutenticado 
+     */
+    public void setUsuario(Usuario usuarioAutenticado){
+        // Pegar os dados do usuario autenticado
+        String emailDigitado = usuarioAutenticado.getEmail();
+        String senhaDigitada = usuarioAutenticado.getSenha();
+        Usuario user = new Usuario(emailDigitado, senhaDigitada);
+        
+        user.setEmail(emailDigitado);
+        
+        System.out.println("setUsuario 1: " + user);
+        
+        //telaLog.getjTxFieldUsuario().setText(emailDigitado);
+        //telaLog.getjPasswordFieldSenha().setText(senhaDigitada);
+    }
+    
+    /**
+     * Pega os campos de texto de usuario na tela de login e armazena nas variaveis.
+     * @return Retorna usuarioDigitado
+     */
+    public Usuario obterUsuario(){
+        // Pegar os dados digitados na tela de login 
+        String emailDigitado = telaLog.getjTxFieldUsuario().getText(); // Pegar email no campo da tela de login
+        String senhaDigitada = telaLog.getjPasswordFieldSenha().getText(); // Pegar senha no campo da tela de login
+        
+        // Instanciar um usuario com os dados digitados
+        Usuario usuarioDigitado = new Usuario(emailDigitado, senhaDigitada); // O usuario digitado tem id 0
+        // Retornar o usuario
+        return usuarioDigitado;
+    }
+
     /**
      * 
      */
@@ -70,15 +85,17 @@ public class ControleLogin {
         // Pegar os campos de usuario da tela de login 
         Usuario usuarioAAutenticar = obterUsuario();
         // Pesquisar usuario no banco de dados
-        UsuarioDAO user = new UsuarioDAO();
-        Usuario userAutenticado = user.selecionarUsuario(usuarioAAutenticar);
+        UsuarioDAO userD = new UsuarioDAO();
+        Usuario userAutenticado = userD.selecionarUsuario(usuarioAAutenticar);
         
         // Se encontrar usuario
         if(userAutenticado != null){
+            Sessao sessao = Sessao.getInstancia();
+            sessao.setUsuario(userAutenticado);
             irParaMenu(); // Abre a tela de menu e fecha a tela de login
             fecharLogin();
         }else{
-            telaLog.aviso("Usuario ou senha invalidos!");
+            TelaLogin.aviso("Usuario ou senha invalidos!");
         }
     }
 }
