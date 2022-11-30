@@ -114,8 +114,7 @@ public class TelaMenu extends javax.swing.JFrame {
         jMenuBarMenu.add(jMenuUsuario);
 
         setJMenuBar(jMenuBarMenu);
-
-        pack();
+        
         setBounds(0,0,1366,768); //EDITAR
     }
  
